@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Мультитовары</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+
+  #products-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .product {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 250px;
+  }
+
+  .product h2 {
+    margin: 0 0 10px 0;
+  }
+
+  .price {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    padding: 5px 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Товары</h1>
+<div id="products-container"></div>
+
+<script>
+  
+  const products = [
+    {
+      id: 1,
+      name: 'Велосипед',
+      price: 10000,
+      count: 1
+    },
+    {
+      id: 2,
+      name: 'Самокат',
+      price: 3000,
+      count: 1
+    },
+    {
+      id: 3,
+      name: 'Ролики',
+      price: 2500,
+      count: 1
+    },
+    {
+      id: 4,
+      name: 'Сноуборд',
+      price: 15000,
+      count: 1
+    }
+  ];
+
+  
+  function renderProducts() {
+    const container = document.getElementById('products-container');
+    container.innerHTML = '';
+
+    products.forEach(product => {
+      const productDiv = document.createElement('div');
+      productDiv.className = 'product';
+
+      
+      const title = document.createElement('h2');
+      title.textContent = product.name;
+      productDiv.appendChild(title);
+
+      
+      const priceDiv = document.createElement('div');
+      priceDiv.className = 'price';
+      priceDiv.textContent = 'Цена: ' + product.price;
+      productDiv.appendChild(priceDiv);
+
+      
+      const quantityDiv = document.createElement('div');
+      quantityDiv.className = 'quantity-controls';
+
+      const btnMinus = document.createElement('button');
+      btnMinus.textContent = '-';
+      btnMinus.onclick = () => {
+        if (product.count > 1) {
+          product.count--;
+          renderProducts();
+        }
+      };
+
+      const countSpan = document.createElement('span');
+      countSpan.textContent = product.count;
+
+      const btnPlus = document.createElement('button');
+      btnPlus.textContent = '+';
+      btnPlus.onclick = () => {
+        product.count++;
+        renderProducts();
+      };
+
+      quantityDiv.appendChild(btnMinus);
+      quantityDiv.appendChild(countSpan);
+      quantityDiv.appendChild(btnPlus);
+
+      productDiv.appendChild(quantityDiv);
+
+      
+      const totalPriceDiv = document.createElement('div');
+      totalPriceDiv.textContent = 'Итого: ' + (product.price * product.count);
+      productDiv.appendChild(totalPriceDiv);
+
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Удалить';
+      deleteBtn.onclick = () => {
+        
+        const index = products.findIndex(p => p.id === product.id);
+        if (index !== -1) {
+          products.splice(index, 1);
+          renderProducts();
+        }
+      };
+      productDiv.appendChild(deleteBtn);
+
+      
+      container.appendChild(productDiv);
+    });
+  }
+
+  
+  renderProducts();
+</script>
+
+</body>
+</html>
