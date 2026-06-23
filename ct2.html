@@ -16,7 +16,7 @@
   }
 
   .product {
-    border: 1px solid #ccc;
+    border: 1px solid #ff0000;
     padding: 10px;
     width: 250px;
   }
@@ -40,16 +40,35 @@
   button {
     padding: 5px 10px;
   }
+
+  #add-product-form {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+
+  #add-product-form input {
+    margin-right: 10px;
+    padding: 5px;
+  }
 </style>
 </head>
 <body>
 
 <h1>Товары</h1>
+
+
+<div id="add-product-form">
+  <input type="text" id="new-product-name" placeholder="Название товара" />
+  <input type="number" id="new-product-price" placeholder="Цена" />
+  <button id="add-product-btn">Добавить товар</button>
+</div>
+
 <div id="products-container"></div>
 
 <script>
-  
-  const products = [
+
+  let products = [
     {
       id: 1,
       name: 'Велосипед',
@@ -76,27 +95,32 @@
     }
   ];
 
-  
+
+  const productsContainer = document.getElementById('products-container');
+  const newProductNameInput = document.getElementById('new-product-name');
+  const newProductPriceInput = document.getElementById('new-product-price');
+  const addProductBtn = document.getElementById('add-product-btn');
+
+
   function renderProducts() {
-    const container = document.getElementById('products-container');
-    container.innerHTML = '';
+    productsContainer.innerHTML = ''; 
 
     products.forEach(product => {
       const productDiv = document.createElement('div');
       productDiv.className = 'product';
 
-      
+
       const title = document.createElement('h2');
       title.textContent = product.name;
       productDiv.appendChild(title);
 
-      
+
       const priceDiv = document.createElement('div');
       priceDiv.className = 'price';
-      priceDiv.textContent = 'Цена: ' + product.price;
+      priceDiv.textContent = `Цена: ${product.price} руб.`; 
       productDiv.appendChild(priceDiv);
 
-      
+
       const quantityDiv = document.createElement('div');
       quantityDiv.className = 'quantity-controls';
 
@@ -105,7 +129,7 @@
       btnMinus.onclick = () => {
         if (product.count > 1) {
           product.count--;
-          renderProducts();
+          renderProducts(); 
         }
       };
 
@@ -125,16 +149,16 @@
 
       productDiv.appendChild(quantityDiv);
 
-      
+
       const totalPriceDiv = document.createElement('div');
-      totalPriceDiv.textContent = 'Итого: ' + (product.price * product.count);
+      totalPriceDiv.textContent = `Итого: ${product.price * product.count} руб.`;
       productDiv.appendChild(totalPriceDiv);
 
-      
+
       const deleteBtn = document.createElement('button');
       deleteBtn.textContent = 'Удалить';
       deleteBtn.onclick = () => {
-        
+
         const index = products.findIndex(p => p.id === product.id);
         if (index !== -1) {
           products.splice(index, 1);
@@ -143,13 +167,37 @@
       };
       productDiv.appendChild(deleteBtn);
 
-      
-      container.appendChild(productDiv);
+
+      productsContainer.appendChild(productDiv);
     });
   }
 
-  
-  renderProducts();
+
+  addProductBtn.onclick = () => {
+    const name = newProductNameInput.value.trim(); 
+    const price = parseInt(newProductPriceInput.value); 
+
+
+    if (name && !isNaN(price) && price > 0) { 
+      const newProduct = {
+        id: Date.now(), 
+        name: name,
+        price: price,
+        count: 1
+      };
+      products.push(newProduct); 
+      renderProducts(); 
+
+
+      newProductNameInput.value = ''; 
+      newProductPriceInput.value = '';
+    } else {
+      alert('Введите название и цену товара.'); 
+    }
+  };
+
+
+  renderProducts(); 
 </script>
 
 </body>
